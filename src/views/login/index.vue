@@ -4,11 +4,11 @@
       <div>
         <img src="../../assets/logo_index.png" alt />
       </div>
-      <el-form ref="form" :model="form">
-        <el-form-item>
+      <el-form :model="loginForm" :rules="loginRules">
+        <el-form-item prop="mobile">
           <el-input v-model="loginForm.mobile" placeholder="请输入手机号码"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="code">
           <el-input
             v-model="loginForm.code"
             placeholder="请输入验证码"
@@ -36,6 +36,18 @@ export default {
       loginForm: {
         mobile: "",
         code: ""
+      },
+      loginRules: {
+        mobile: [
+          //必填项校验，因为有多重校验，所以需要一个数组
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          {}
+        ],
+        code: [
+          { required: true, message: "请输入验证码", trigger: "blur" },
+          //输入字符长度为6位数
+          { len: 6, message: "验证码是6位数", trigger: "blur" }
+        ]
       }
     };
   }
