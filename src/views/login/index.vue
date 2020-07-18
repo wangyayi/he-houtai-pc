@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import auth from "@/utils/auth";
+import auth from "@/utils/auth.js";
 export default {
   name: "page-login",
   data() {

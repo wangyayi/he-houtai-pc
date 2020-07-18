@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import auth from '@/utils/auth'
+import auth from '@/utils/auth.js'
+
+//引入组件
 import Login from '@/views/login/index.vue'
 import Layout from '@/views/Layout.vue'
 import Welcome from '@/views/Welcome'
+import Notfound from '@/views/Welcome/404.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -16,7 +19,9 @@ const routes = [
         children: [
             { path: '/', component: Welcome }
         ]
-    }
+    },
+    //当以上路由都不符合客户输入的地址时，显示404
+    { path: '*', component: Notfound }
 
 ]
 
