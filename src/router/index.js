@@ -7,6 +7,7 @@ import Login from '@/views/login/index.vue'
 import Layout from '@/views/Layout.vue'
 import Welcome from '@/views/Welcome'
 import Notfound from '@/views/Welcome/404.vue'
+import Artical from '@/views/artical/index'
 Vue.use(VueRouter)
 
 const routes = [
@@ -17,7 +18,8 @@ const routes = [
         path: '/',
         component: Layout,
         children: [
-            { path: '/', component: Welcome }
+            { path: '/', component: Welcome },
+            { path: '/artical', component: Artical }
         ]
     },
     //当以上路由都不符合客户输入的地址时，显示404
