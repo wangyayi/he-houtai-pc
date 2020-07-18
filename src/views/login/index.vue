@@ -67,7 +67,17 @@ export default {
       //this.$refs.loginForm获取表单实例，然后才能调用实例上封装的方法，来判断表单里面所有的内容是否验证成功
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          alert("校验成功");
+          this.$http
+            .post(
+              "http://ttapi.research.itcast.cn/mp/v1_0/authorizations",
+              this.loginForm
+            )
+            .then(res => {
+              this.$router.push("/");
+            })
+            .catch(e => {
+              this.$message.error("手机或验证码错误");
+            });
         }
       });
     }
