@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import auth from "@/utils/auth";
 export default {
   name: "page-login",
   data() {
@@ -73,6 +74,8 @@ export default {
               this.loginForm
             )
             .then(res => {
+              //登录成功之后，保存用户信息
+              auth.setUser(res.data.data);
               this.$router.push("/");
             })
             .catch(e => {
