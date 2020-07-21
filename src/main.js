@@ -7,15 +7,20 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue';
 //导入自己的路由模块
 import router from '@/router';
+
+
 //导入axios
-import axios from 'axios'
+import axios from '@/api';
+// import axios from 'axios'
 
 //挂载到Vue原型对象
-Vue.prototype.$http = axios
+Vue.prototype.$http = axios;
+
 
 Vue.use(ElementUI);
-Vue.config.productionTip = false
-
+Vue.config.productionTip = false;
+import myPlugin from '@/plugin.js';
+Vue.use(myPlugin);
 new Vue({
   render: h => h(App),
   router

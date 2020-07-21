@@ -69,10 +69,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.$http
-            .post(
-              "http://ttapi.research.itcast.cn/mp/v1_0/authorizations",
-              this.loginForm
-            )
+            .post("authorizations", this.loginForm)
             .then(res => {
               //登录成功之后，保存用户信息
               auth.setUser(res.data.data);
@@ -83,6 +80,19 @@ export default {
             });
         }
       });
+
+      //采用async函数发送请求
+      // this.$refs.loginForm.validate(async vaild => {
+      //   if (valid) {
+      //     try {
+      //       const res = await this.$http.post("authorizations", this.loginForm);
+      //       auth.setUser(res.data.data);
+      //       this.$router.push("/");
+      //     } catch (e) {
+      //       this.$message.error("手机号或验证码错误");
+      //     }
+      //   }
+      // });
     }
   }
 };

@@ -7,7 +7,6 @@
       <!-- 导航区域 -->
       <el-menu
         router
-        default-active="@route.path"
         class="el-menu-vertical-demo"
         background-color="#002233"
         text-color="#fff"
@@ -15,12 +14,13 @@
         style="border-right:none"
         :collapse="!isOpen"
         :collapse-transition="false"
+        :default-active="$route.path"
       >
         <el-menu-item index="/">
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        <el-menu-item index="/artical">
+        <el-menu-item index="/articles">
           <i class="el-icon-document"></i>
           <span slot="title">内容管理</span>
         </el-menu-item>

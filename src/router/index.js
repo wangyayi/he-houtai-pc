@@ -7,7 +7,7 @@ import Login from '@/views/login/index.vue'
 import Layout from '@/views/Layout.vue'
 import Welcome from '@/views/Welcome'
 import Notfound from '@/views/Welcome/404.vue'
-import Artical from '@/views/artical/index'
+import Article from '@/views/article/index'
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,7 +19,7 @@ const routes = [
         component: Layout,
         children: [
             { path: '/', component: Welcome },
-            { path: '/artical', component: Artical }
+            { path: '/articles', component: Article }
         ]
     },
     //当以上路由都不符合客户输入的地址时，显示404
@@ -34,10 +34,9 @@ const router = new VueRouter({
 //导航守卫,用来判断是否登录，如果登录有token那就可以访问，要是没有，就跳转登录页面，登录之后才可以跳转
 router.beforeEach((to, from, next) => {
     const user = auth.getUser()
-    if (to.path !== '/login' && !user.token) {
-        alert('请先登录')
-        return next('/login')
-    }
+    //当页面不是登录页面和没有带token的时候,跳转到登录页面
+    if (to.path !== '/login' && !user.token) return next('/login')
+
 
     next()
 })
