@@ -8,6 +8,8 @@ import Layout from '@/views/Layout.vue'
 import Welcome from '@/views/Welcome'
 import Notfound from '@/views/Welcome/404.vue'
 import Article from '@/views/article/index'
+import Image from '@/views/image/index'
+import Publish from '@/views/publish/index'
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,7 +21,9 @@ const routes = [
         component: Layout,
         children: [
             { path: '/', component: Welcome },
-            { path: '/articles', component: Article }
+            { path: '/articles', component: Article },
+            { path: '/image', component: Image },
+            { path: '/publish', component: Publish }
         ]
     },
     //当以上路由都不符合客户输入的地址时，显示404

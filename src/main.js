@@ -8,6 +8,9 @@ import App from './App.vue';
 //导入自己的路由模块
 import router from '@/router';
 
+//导入自己的全局样式
+import '@/styles/index.less'
+
 
 //导入axios
 import axios from '@/api';

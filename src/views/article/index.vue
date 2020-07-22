@@ -53,7 +53,7 @@
       <div slot="header">根据筛选条件共查询到{{total}}条结果：</div>
       <!-- 表格 -->
       <el-table :data="articles">
-        <el-table-column label="封面">
+        <el-table-column label="封面" height="120px">
           <template slot-scope="scope">
             <el-image :src="scope.row.cover.images[0]" style="width:180px;height=120px">
               <div slot="error" class="image-slot">
@@ -62,7 +62,7 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column label="标题" prop="title"></el-table-column>
+        <el-table-column label="标题" prop="title" width="400px"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status===0" type="info">草稿</el-tag>
@@ -202,6 +202,7 @@ export default {
       const res = await this.$http.get("articles", { params: this.reqParams });
       console.log(res);
       this.articles = res.data.data.results;
+      this.total = res.data.data.total_count;
     }
   }
 };
