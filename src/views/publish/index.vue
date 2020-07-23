@@ -6,12 +6,14 @@
       </div>
       <!-- 表单 -->
       <el-form label-width="120px">
-        <el-form-item label="标题">
+        <el-form-item label="标题:">
           <el-input v-model="articalTitle.name"></el-input>
         </el-form-item>
-        <el-form-item label="内容"></el-form-item>
-        <el-form-item label="封面"></el-form-item>
-        <el-form-item label="频道"></el-form-item>
+        <el-form-item label="内容:"></el-form-item>
+        <el-form-item label="封面:"></el-form-item>
+        <el-form-item label="频道:">
+          <my-channel v-model="articalTitle.channle_id"></my-channel>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary">发布文章</el-button>
           <el-button>存入草稿</el-button>
@@ -27,7 +29,8 @@ export default {
   data() {
     return {
       articalTitle: {
-        name: ""
+        name: "",
+        channle_id: null
       }
     };
   }

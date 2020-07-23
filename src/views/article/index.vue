@@ -16,20 +16,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道:">
-          <el-select
-            @change="changeChannel"
-            clearable
-            v-model="reqParams.channel_id"
-            placeholder="请选择"
-          >
-            <!-- 遍历后台获取的数据 -->
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+          <!-- 这是v-model的语法糖 -->
+          <!-- <my-channel :value="reqParams.channel_id" @input="reqParams.channel_id=$event"></my-channel> -->
+          <my-channel v-model="reqParams.channel_id"></my-channel>
         </el-form-item>
         <el-form-item label="日期:">
           <el-date-picker
@@ -139,13 +128,12 @@ export default {
       //文章数据数组
       articles: [],
       //频道选项数组
-      channelOptions: [],
+
       total: 0
     };
   },
   created() {
     this.getArticles();
-    this.getChannelOptions();
   },
 
   methods: {
@@ -187,17 +175,12 @@ export default {
         this.reqParams.end_pubdate = null;
       }
     },
-    changeChannel(val) {
-      if (val === "") this.reqParams.channel_id = null;
-    },
+
     changePager(newPage) {
       this.reqParams.page = newPage;
       this.getArticles();
     },
-    async getChannelOptions() {
-      const res = await this.$http.get("channels");
-      this.channelOptions = res.data.data.channels;
-    },
+
     async getArticles() {
       const res = await this.$http.get("articles", { params: this.reqParams });
       console.log(res);
