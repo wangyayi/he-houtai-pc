@@ -112,6 +112,9 @@ export default {
       }
       // 完成功能后关闭选项卡
       this.dislogVisible = false;
+      //这里需要做父组件的业务，校验封面图是否修改
+      //在确认图片后，会触发my-image的自定义事件confirm
+      this.$emit("confirm");
     },
     uploadSuccess(res) {
       this.uploadImgUrl = res.data.url;

@@ -5,34 +5,42 @@
         <my-bread>发布文章</my-bread>
       </div>
       <!-- 表单 -->
-      <el-form label-width="120px">
-        <el-form-item label="标题:">
-          <el-input v-model="articalTitle.name"></el-input>
+      <!-- 提交表单时的验证，先在el-form上添加:model和 :rules-->
+      <el-form ref="articalForm" label-width="120px" :model="articalForm" :rules="articalRules">
+        <el-form-item label="标题:" prop="title">
+          <el-input v-model="articalForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="内容:" class="el-item">
-          <quill-editor v-model="articalTitle.content" :options="editorOption" />
+        <el-form-item label="内容:" class="el-item" prop="content">
+          <!-- 这是第三方的富文本组件，所以用elementUI没有办法进行内容的校验 -->
+          <!-- 用富文本自带的事件@blur -->
+          <quill-editor @blur="checkContent" v-model="articalForm.content" :options="editorOption" />
         </el-form-item>
-        <el-form-item label="封面:">
+        <el-form-item label="封面:" prop="cover.type">
           <!-- 当切换封面图数据的时候，图片中的数据要进行重置,用change事件实现 -->
-          <el-radio-group @change="articalTitle.cover.images=[]" v-model="articalTitle.cover.type">
+          <el-radio-group @change="articalForm.cover.images=[]" v-model="articalForm.cover.type">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
           <!-- 只有一张图的情况 -->
-          <div style="margin-top:10px" v-if="articalTitle.cover.type===1">
+          <div style="margin-top:10px" v-if="articalForm.cover.type===1">
             <!-- 父子组件传值，子组件上传一张图片图片地址传给父组件 -->
             <!-- <my-image :value="testImg" @input="testImg=$event"></my-image> -->
-            <my-image v-model="articalTitle.cover.images[0]"></my-image>
+            <my-image @confirm="checkCover" v-model="articalForm.cover.images[0]"></my-image>
           </div>
           <!-- 需要三张图的情况 -->
-          <div style="margin-top:10px" v-if="articalTitle.cover.type===3">
-            <my-image v-model="articalTitle.cover.images[i-1]" v-for="i in 3" :key="i"></my-image>
+          <div style="margin-top:10px" v-if="articalForm.cover.type===3">
+            <my-image
+              @confirm="checkCover"
+              v-model="articalForm.cover.images[i-1]"
+              v-for="i in 3"
+              :key="i"
+            ></my-image>
           </div>
         </el-form-item>
-        <el-form-item label="频道:">
-          <my-channel v-model="articalTitle.channle_id"></my-channel>
+        <el-form-item label="频道:" prop="channle_id">
+          <my-channel v-model="articalForm.channle_id"></my-channel>
         </el-form-item>
         <el-form-item>
           <el-button type="primary">发布文章</el-button>
@@ -58,8 +66,26 @@ export default {
   },
 
   data() {
+    const vaildCoverFn = (ruler, value, callback) => {
+      // 此时的value就是cover.type
+      const images = this.articalForm.cover.images;
+      if (value === 1) {
+        if (images[0] && images.length === 1) {
+          callback();
+        } else {
+          callback(new Error("请选择一张封面图"));
+        }
+      } else if (value === 3) {
+        if (images[0] && images[1] && images[2]) {
+          callback();
+        } else {
+          callback(new Error("请选择三张封面图"));
+        }
+      }
+    };
     return {
-      articalTitle: {
+      articalForm: {
+        title: "",
         name: "",
         channle_id: null,
         content: null,
@@ -69,6 +95,21 @@ export default {
           images: [],
         },
       },
+      articalRules: {
+        title: [
+          { required: true, message: "请输入文章标题", trigger: "blur" },
+          { min: 5, max: 20, message: "长度在5 到 20 个字符", trigger: "blur" },
+        ],
+        content: [
+          { required: true, message: "请输入文章标题", trigger: "blur" },
+        ],
+        channle_id: [
+          { required: true, message: "请选择频道", trigger: "change" },
+        ],
+        //单选框组绑定的是articalForm .cover.type 它能出发chang来进行校验
+        "cover.type": [{ validator: vaildCoverFn, trigger: "change" }],
+      },
+      //富文本需要的配置项
       editorOption: {
         placeholder: "请输入文章内容",
         modules: {
@@ -83,6 +124,16 @@ export default {
         },
       },
     };
+  },
+  methods: {
+    checkCover() {
+      //进行cover.type校验
+      this.$refs.articalForm.validateField("cover.type");
+    },
+    checkContent() {
+      //通过表单组件来使用声明好的content校验规则来校验content字段
+      this.$refs.articalForm.validateField("content");
+    },
   },
 };
 </script>
