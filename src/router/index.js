@@ -2,14 +2,17 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import auth from '@/utils/auth.js'
 
-//引入组件
-import Login from '@/views/login/index.vue'
-import Layout from '@/views/Layout.vue'
-import Welcome from '@/views/Welcome'
-import Notfound from '@/views/Welcome/404.vue'
-import Article from '@/views/article/index'
-import Image from '@/views/image/index'
-import Publish from '@/views/publish/index'
+//引入组件,以这种方式导包，在后期打包上线时这些包会分别打包出来，在加载时不会一次性加载，跳转到哪个才会加载哪个
+const Login = () => import('@/views/login/index.vue')
+const Layout = () => import('@/views/Layout.vue')
+const Welcome = () => import('@/views/Welcome')
+const Notfound = () => import('@/views/Welcome/404.vue')
+const Article = () => import('@/views/article/index')
+const Image = () => import('@/views/image/index')
+const Publish = () => import('@/views/publish/index')
+const Comment = () => import('@/views/comment/index')
+const Fans = () => import('@/views/fans/index')
+const Setting = () => import('@/views/setting/index')
 Vue.use(VueRouter)
 
 const routes = [
@@ -23,7 +26,11 @@ const routes = [
             { path: '/', component: Welcome },
             { path: '/articles', component: Article },
             { path: '/image', component: Image },
-            { path: '/publish', component: Publish }
+            { path: '/publish', component: Publish },
+            { path: '/comment', component: Comment },
+            { path: '/fans', component: Fans },
+            { path: '/setting', component: Setting }
+
         ]
     },
     //当以上路由都不符合客户输入的地址时，显示404

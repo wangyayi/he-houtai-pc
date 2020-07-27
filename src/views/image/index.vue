@@ -64,13 +64,13 @@ export default {
       reqParams: {
         collect: false,
         page: 1,
-        per_page: 10
+        per_page: 10,
       },
       //素材列表
       images: [],
       total: 0,
       dialogVisible: false,
-      imageUrl: ""
+      imageUrl: "",
     };
   },
   created() {
@@ -99,7 +99,7 @@ export default {
         const updateStatus = !item.is_collected;
         await this.$http.put(`user/images/${item.id}`, {
           //collect和当前图片取反即可，当前已收藏--->取消收藏
-          collect: updateStatus
+          collect: updateStatus,
         });
         this.$message.success(updateStatus ? "添加收藏成功" : "取消收藏成功");
         item.is_collected = updateStatus;
@@ -112,7 +112,7 @@ export default {
       this.$confirm("此操作将永久删除该图片素材, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           try {
@@ -136,12 +136,12 @@ export default {
     },
     async getImages() {
       const res = await this.$http.get("user/images", {
-        params: this.reqParams
+        params: this.reqParams,
       });
       this.images = res.data.data.results;
       this.total = res.data.data.total_count;
-    }
-  }
+    },
+  },
 };
 </script>
 

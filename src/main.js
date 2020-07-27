@@ -22,6 +22,8 @@ Vue.prototype.$http = axios;
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
+
+//导入自己封装的插件并使用
 import myPlugin from '@/plugin.js';
 Vue.use(myPlugin);
 new Vue({

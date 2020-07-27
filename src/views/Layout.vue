@@ -38,11 +38,11 @@
         </el-menu-item>
         <el-menu-item index="/fans">
           <i class="el-icon-present"></i>
-          <span slot="title">导航二</span>
+          <span slot="title">粉丝管理</span>
         </el-menu-item>
         <el-menu-item index="/setting">
           <i class="el-icon-setting"></i>
-          <span slot="title">导航二</span>
+          <span slot="title">个人设置</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -84,6 +84,7 @@
 
 
 <script>
+import eventBus from "@/eventBus.js";
 import auth from "@/utils/auth.js";
 export default {
   name: "layout",
@@ -93,8 +94,8 @@ export default {
       //声明用户信息，名字和头像
       user: {
         name: "",
-        photo: ""
-      }
+        photo: "",
+      },
     };
   },
   //在组件初始化时执行的钩子函数，组件初始化时将本地存储的数据放到data中
@@ -102,6 +103,13 @@ export default {
     const info = auth.getUser();
     const { name, photo } = auth.getUser();
     this.user = { name, photo };
+    //绑定eventBus自定义事件，接收个人设置传递过来的修改的名字
+    this.$on("updateUserName", (data) => {
+      this.user.name = data;
+    });
+    this.$on("updateUserPhoto", (photo) => {
+      this.user.photo = photo;
+    });
   },
   methods: {
     setting() {
@@ -115,8 +123,8 @@ export default {
     },
     clickItem(command) {
       this[command]();
-    }
-  }
+    },
+  },
 };
 </script>
 

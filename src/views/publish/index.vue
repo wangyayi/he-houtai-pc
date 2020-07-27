@@ -2,7 +2,8 @@
   <div class="container-publish">
     <el-card class="box-card">
       <div slot="header">
-        <my-bread>发布文章</my-bread>
+        <!-- 获取地址栏的id，如果地址栏有id就是修改文章，没有就是发布文章 -->
+        <my-bread>{{$route.query.id?'修改文章':'发布文章'}}</my-bread>
       </div>
       <!-- 表单 -->
       <!-- 提交表单时的验证，先在el-form上添加:model和 :rules-->
@@ -39,12 +40,17 @@
             ></my-image>
           </div>
         </el-form-item>
-        <el-form-item label="频道:" prop="channle_id">
-          <my-channel v-model="articalForm.channle_id"></my-channel>
+        <el-form-item label="频道:" prop="channel_id">
+          <my-channel v-model="articalForm.channel_id"></my-channel>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary">发布文章</el-button>
-          <el-button>存入草稿</el-button>
+        <!-- 如果有id修改按钮，没有就是发布文章 -->
+        <el-form-item v-if="$route.query.id">
+          <!-- 绿色按钮，修改的时候要用 -->
+          <el-button type="success" @click="editorArticle">修改文章</el-button>
+        </el-form-item>
+        <el-form-item v-else>
+          <el-button type="primary" @click="saveArticle(false)">发布文章</el-button>
+          <el-button @click="saveArticle(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -86,8 +92,8 @@ export default {
     return {
       articalForm: {
         title: "",
-        name: "",
-        channle_id: null,
+
+        channel_id: null,
         content: null,
         cover: {
           type: 1,
@@ -101,9 +107,9 @@ export default {
           { min: 5, max: 20, message: "长度在5 到 20 个字符", trigger: "blur" },
         ],
         content: [
-          { required: true, message: "请输入文章标题", trigger: "blur" },
+          { required: true, message: "请输入文章内容", trigger: "blur" },
         ],
-        channle_id: [
+        channel_id: [
           { required: true, message: "请选择频道", trigger: "change" },
         ],
         //单选框组绑定的是articalForm .cover.type 它能出发chang来进行校验
@@ -125,7 +131,63 @@ export default {
       },
     };
   },
+  created() {
+    //区分业务场景，如果组件初始化，默认的场景是发布，不需要做什么
+    // 如果默认场景是编辑，需要修改
+    if (this.$route.query.id) {
+      this.getArticle();
+    }
+  },
+  //监听地址栏ID的变化，去区分是发布文章还是编辑文章
+  watch: {
+    "$route.query.id": function () {
+      if (this.$route.query.id) {
+        //填充表单
+        this.getArticle();
+      } else {
+        //发布文章+重置表单（还原数据，清空表单）
+        this.$refs.articalForm.resetFields();
+        this.articalForm.cover.images = [];
+      }
+    },
+  },
   methods: {
+    editorArticle() {
+      //整体表单验证
+      this.$refs.articalForm.validate(async (valid) => {
+        console.log(this.$route.query.id);
+        if (valid) {
+          try {
+            await this.$http.put(
+              `articles/${this.$route.query.id}?draft=false`,
+              this.articalForm
+            );
+            this.$message.success("修改文章成功");
+            this.$router.push("/articles");
+          } catch (err) {
+            this.$message.error("发表文章失败");
+          }
+        }
+      });
+    },
+
+    async getArticle() {
+      const res = await this.$http.get(`articles/${this.$route.query.id}`);
+      this.articalForm = res.data.data;
+    },
+    saveArticle(draft) {
+      this.$refs.articalForm.validate(async (valid) => {
+        if (valid) {
+          try {
+            await this.$http.post(`articles?draft=${draft}`, this.articalForm);
+            this.$message.success(draft ? "存入草稿" : "发表文章成功");
+            this.$router.push("/articles");
+          } catch (err) {
+            this.$message.error(draft ? "存入草稿失败" : "发表文章失败");
+          }
+        }
+      });
+    },
     checkCover() {
       //进行cover.type校验
       this.$refs.articalForm.validateField("cover.type");
@@ -142,8 +204,6 @@ export default {
 // ::v-deep深度作用符号，让选择器在其它组件下生效
 ::v-deep .quill-editor {
   height: 200px;
-}
-::v-deep .el-item {
-  margin-bottom: 70px;
+  margin-bottom: 60px;
 }
 </style>
